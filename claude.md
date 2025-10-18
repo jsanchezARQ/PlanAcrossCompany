@@ -17,8 +17,13 @@ Crear una vista de matriz donde:
 - **Componentes**: shadcn/ui (sobre Tailwind CSS)
 - **Iconos**: lucide-react
 - **Virtualización**: @tanstack/react-virtual (performance con miles de registros)
-- **State Management**: Zustand
+- **State Management**: Zustand (preparado, evaluando si es necesario vs React Context)
 - **Utilidades**: date-fns (manejo de fechas)
+
+### Notas de Implementación
+- **Dark Mode**: No incluido en MVP (puede agregarse en Fase 2 si es necesario)
+- **App.tsx actual**: Componente temporal de testing para Fase 1. Será reemplazado en Fase 2 con Grid real y autenticación
+
 
 ### Backend
 - **Base de datos**: Firebase Firestore (NoSQL con realtime)
@@ -125,6 +130,18 @@ tenants/{tenantId}
 ## Referencia Visual
 
 Ver [ejemplo.png](./ejemplo.png) para la estructura actual en Excel que se está replicando.
+
+## Convenciones de Código
+
+### Tipos TypeScript
+
+Los tipos siguen un patrón DRY usando utilidades de TypeScript (`Omit`, `Partial`).
+
+**Documentación completa**: Ver [doc/rules/types-bbdd.md](./doc/rules/types-bbdd.md) para:
+- Patrón estándar y reglas de implementación
+- Casos especiales (campos inmutables, campos siempre requeridos)
+- Checklist para crear nuevos tipos
+- Ejemplos completos de referencia
 
 ## Plan de Implementación
 

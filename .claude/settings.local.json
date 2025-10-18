@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install firebase)",
+      "Bash(npm install -D tailwindcss postcss autoprefixer)",
+      "Bash(npx tailwindcss init -p)",
+      "Bash(npm ls tailwindcss)",
+      "Bash(npm install class-variance-authority clsx tailwind-merge)",
+      "Bash(npm install @tanstack/react-virtual zustand lucide-react date-fns)",
+      "Bash(npm install -D @tailwindcss/postcss)",
+      "Bash(npm install)",
+      "Bash(npm run build)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

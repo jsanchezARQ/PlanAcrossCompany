@@ -3,30 +3,57 @@
 ## Fase 1: Setup & Configuraci�n (D�a 1-2)
 
 ### 1. Instalar dependencias
-- [ ] Firebase SDK (auth, firestore, hosting)
-- [ ] shadcn/ui + Tailwind CSS
-- [ ] TanStack Virtual (virtualizaci�n)
-- [ ] Zustand (state management)
-- [ ] lucide-react (iconos)
-- [ ] date-fns (manejo de fechas)
+- [x] Firebase SDK (auth, firestore, hosting)
+- [x] shadcn/ui + Tailwind CSS
+- [x] TanStack Virtual (virtualizaci�n)
+- [x] Zustand (state management)
+- [x] lucide-react (iconos)
+- [x] date-fns (manejo de fechas)
 
-### 2. Configurar Firebase
-- [ ] Crear proyecto en Firebase Console
-- [ ] Configurar Authentication (Google)
-- [ ] Configurar Firestore con estructura de subcollections por tenant
-- [ ] Configurar Security Rules b�sicas
-- [ ] Setup Firebase Hosting
 
-### 3. Configurar shadcn/ui
-- [ ] Instalar Tailwind CSS
-- [ ] Inicializar shadcn/ui
-- [ ] Agregar componentes base: Button, Input, Card, Table, Dialog, Select
+
+### 2. Configurar shadcn/ui
+- [x] Instalar Tailwind CSS
+- [x] Configurar path aliases (@/*)
+- [x] Crear utility function cn()
+- [x] Agregar componentes base: Button, Input, Card, Table
+
+### 3. Crear types de typescript
+- [x] Tenant type
+- [x] Employee type
+- [x] Team type
+- [x] Record type
+- [x] View type
+- [x] Auth type
+- [x] Index de exports
+
+### 4. Crear datos mockeados y testear
+- [x] Crear mockData.ts con datos de prueba (tenants, teams, employees, records) + helper functions (getTeamById, getEmployeesByTeam, getRecordsByEmployeeAndDateRange)
+- [x] Actualizar App.tsx para testear tipos y componentes
+- [x] Testear Tailwind CSS
+- [x] Testear shadcn/ui componentes: Button, Input, Card, Table
+- [x] Testear tipos TypeScript con datos reales
+- [x] Ejecutar npm run dev y verificar funcionamiento
+
+### 5. Pendiente: Testear librerías restantes
+- [ ] Testear lucide-react (iconos)
+- [ ] Página 2: Testear TanStack Virtual (virtualización)
+- [ ] Página 2: Testear Zustand (state management)
+- [ ] Página 3: Testear date-fns (manejo de fechas)
 
 ---
 
-## Fase 2: Autenticaci�n & Multi-tenant (D�a 3-4)
+## Fase 2: Firebase & Autenticaci�n & Multi-tenant (D�a 3-4)
 
-### 4. Sistema de autenticaci�n
+
+### 1. Configurar Firebase
+- [x] Crear proyecto en Firebase Console
+- [x] Configurar Authentication (email/password)
+- [x] Configurar Firestore con estructura de subcollections por tenant
+- [ ] Configurar Security Rules b�sicas
+- [ ] Setup Firebase Hosting
+
+### 2. Sistema de autenticaci�n
 - [ ] Crear contexto de Auth con Firebase
 - [ ] Pantalla de Login
 - [ ] Pantalla de Registro
@@ -34,11 +61,17 @@
 - [ ] Protecci�n de rutas
 - [ ] Logout functionality
 
-### 5. Modelo de datos Firestore
+### 3. Modelo de datos Firestore
 - [ ] Implementar estructura anidada por tenant
 - [ ] Crear tipos TypeScript para todas las entidades (Tenant, Employee, Team, Record, View)
 - [ ] Funciones helper para queries
 - [ ] Setup de �ndices compuestos en Firestore
+
+### 4. Modelo de datos Firestore
+- [ ] Testear conexión con firebase
+- [ ] Testear Auth
+- [ ] Testear acceso a los datos
+- [ ] Testear edición de los datos
 
 ---
 
@@ -110,12 +143,13 @@
 - [ ] `.firebaserc` - Alias de proyectos Firebase
 
 ### Tipos
-- [ ] `src/types/tenant.ts` - Tipo Tenant
-- [ ] `src/types/employee.ts` - Tipo Employee
-- [ ] `src/types/team.ts` - Tipo Team
-- [ ] `src/types/record.ts` - Tipo Record
-- [ ] `src/types/view.ts` - Tipo View
-- [ ] `src/types/auth.ts` - Tipos de autenticaci�n
+- [x] `src/types/tenant.ts` - Tipo Tenant
+- [x] `src/types/employee.ts` - Tipo Employee
+- [x] `src/types/team.ts` - Tipo Team
+- [x] `src/types/record.ts` - Tipo Record
+- [x] `src/types/view.ts` - Tipo View
+- [x] `src/types/auth.ts` - Tipos de autenticaci�n
+- [x] `src/types/index.ts` - Index de exports
 
 ### Contextos y Hooks
 - [ ] `src/contexts/AuthContext.tsx` - Contexto de autenticaci�n
