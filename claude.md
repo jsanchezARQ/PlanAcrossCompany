@@ -1,24 +1,131 @@
-Proyecto sencillo con vite y react. Está por decididir la BBDD que debería de ir detrás.
+# Employee Planning Matrix - MVP
 
-El objetivo del proyecto será tener una vista de una matriz, donde tendré una columna por cada empleado y podré ver el valor que tiene por cada fecha a la izquierda.
+Proyecto de planificación de empleados con interfaz tipo Excel para gestión de registros diarios por empleado.
 
-El objetivo es poder cambiar los valores de cada uno de estos de una manera muy muy sencilla, poder seleccionar mas de una columna para poder pegar un valor, etc... es decir una funcionalidad parecida a la del excel a la hora editar los registros.
+## Objetivo
 
-Es importante que tengamos en cuenta el uso de la virtualización y la carga de datos para que la usabilidad de la aplicación tenga un performance excelente y sea muy rápida tanto la visualización de datos como la modificación.
-Pensemos que tendremos millones de registros, ya que pueden haber más 300 empleados y podremos tendremos un registro por cada uno de ellos de momento por cada día. Los datos se deben de actualizar en realtime y permitir la coedicion de multiples usuarios.
+Crear una vista de matriz donde:
+- **Columnas**: Empleados agrupados por equipos (con colores)
+- **Filas**: Fechas (una fila por día)
+- **Celdas**: Valores de texto libre (ej: "Ramcon", "VACACIONES", "MIGASA")
+- **Interacción**: Edición inline similar a Excel, simple y rápida
 
-A nivel visual usaremos una biblioteca de compontentes  shadcn y un único fuente de iconos que está por decidir.
+## Stack Tecnológico Decidido
 
+### Frontend
+- **Framework**: Vite + React 19 + TypeScript
+- **Componentes**: shadcn/ui (sobre Tailwind CSS)
+- **Iconos**: lucide-react
+- **Virtualización**: @tanstack/react-virtual (performance con miles de registros)
+- **State Management**: Zustand
+- **Utilidades**: date-fns (manejo de fechas)
 
-La BBDD. podría ser postgreSQL con prisma o un noSQL como Firabse o COSMOSDB. Me interesa que vaya muy muy rápido. 
+### Backend
+- **Base de datos**: Firebase Firestore (NoSQL con realtime)
+- **Autenticación**: Firebase Auth (email/password, preparado para SSO futuro)
+- **Hosting**: Firebase Hosting
+- **Razones**: Realtime nativo, cero configuración backend, velocidad de desarrollo
 
-De momento la BBDD debería tener.
+## Arquitectura de Datos (Firestore)
 
-FASE 1 (MVP):
-TenantId (tenantid, name)
-Teams (FullName, DisplayName, Manager(empleado), color, TenantId)
-Empleados (FullName, DisplayName, Team, Permisos (editar, ver), TenantId)
-Registros (Empleado, Fecha, Valor, Estilo, TenantId)
-Vistas (Propietario(Empleado), Filtros, Shared ([Empleados]), color, TenantId )
+Estructura anidada por tenant usando subcollections:
 
-Se puede ver un ejemplo del actual excel que usamos para esto en ./image.png
+```
+tenants/{tenantId}
+  - name: string
+  - createdAt: timestamp
+
+  /employees/{employeeId}
+    - fullName: string
+    - displayName: string
+    - teamId: string
+    - canEdit: boolean
+    - userId: string (link a Firebase Auth)
+
+  /teams/{teamId}
+    - fullName: string
+    - displayName: string
+    - managerId: string (ref a employee)
+    - color: string (ej: "#FF5733")
+
+  /records/{recordId}
+    - employeeId: string
+    - date: timestamp
+    - value: string (texto libre)
+    - style: object (colores, estilos visuales)
+    - updatedAt: timestamp
+    - updatedBy: string
+
+  /views/{viewId}
+    - ownerId: string
+    - filters: object
+    - sharedWith: array<string>
+    - color: string
+```
+
+**Ventajas de esta estructura**:
+- No necesita campo `tenantId` en cada documento
+- Aislamiento natural por tenant en Security Rules
+- Queries más rápidas (no filtrar por tenantId)
+- Imposible acceso cross-tenant por error
+
+## Requisitos de Performance
+
+- **Volumen de datos**: Centenares de miles de registros (~300 empleados x 365 días/año)
+- **Usuarios concurrentes**: 20-30 editores, más visualizadores
+- **Estrategia**:
+  - Virtualización (solo renderizar ~50 filas visibles)
+  - Carga inicial de 1-3 meses de datos
+  - Infinite scroll para cargar más datos
+  - Cache local de Firestore
+  - Índices compuestos optimizados
+
+## Funcionalidades MVP (2 semanas)
+
+### Incluidas en MVP
+✅ Autenticación con email/password (multi-tenant)
+✅ Grid virtualizado empleado x fecha
+✅ Edición inline de celdas individuales con auto-save
+✅ Colores por equipo en headers
+✅ Updates en realtime (ver cambios de otros usuarios)
+✅ Filtros básicos (fecha, equipo, empleado)
+✅ CRUD de empleados y equipos
+✅ Permisos básicos (canEdit vs solo lectura)
+
+### Diferidas a Fase 2
+❌ Selección múltiple de celdas tipo Excel
+❌ Copy/paste masivo
+❌ Vistas personalizadas guardadas
+❌ SSO / Azure AD
+❌ Historial de cambios
+❌ Exportar a Excel
+❌ Validaciones de valores
+
+## Reglas de Negocio
+
+- **Equipos**: Tienen nombre, color y manager. Se muestran en el header agrupando empleados
+- **Header visual**: Ej: "TEC-BCN" es un equipo con color naranja
+- **Valores**: Texto libre sin validaciones (por ahora)
+- **Edición concurrente**: No se permite editar la misma celda simultáneamente
+- **Permisos**: A nivel de tenant (o puede editar todo o solo ver todo)
+
+## Autenticación
+
+- **Método inicial**: Email + password (Firebase Auth)
+- **Preparado para**: SSO / Azure AD en futuras versiones (solo cambiar provider)
+- **Custom claims**: Cada usuario tiene `tenantId` y `canEdit` en su token
+- **Security Rules**: Validan tenantId automáticamente
+
+## Hosting / Deploy
+
+- **Plataforma**: Firebase Hosting (con opción de migrar a Azure si es necesario)
+- **CI/CD**: Firebase CLI para deploy
+- **Variables de entorno**: Config de Firebase en `.env`
+
+## Referencia Visual
+
+Ver [ejemplo.png](./ejemplo.png) para la estructura actual en Excel que se está replicando.
+
+## Plan de Implementación
+
+Ver [doc/PlanInicial.md](./doc/PlanInicial.md) para el plan detallado de 2 semanas con checkboxes.
