@@ -1,20 +1,126 @@
 rules_version = '2';
 
+/**
+ * Firestore Security Rules
+ *
+ * Esta configuración implementa aislamiento multi-tenant usando subcollections.
+ * Cada tenant tiene sus propias subcollections: employees, teams, records, views
+ *
+ * Estructura:
+ * tenants/{tenantId}
+ *   /employees/{employeeId}
+ *   /teams/{teamId}
+ *   /records/{recordId}
+ *   /views/{viewId}
+ */
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-   match /{document=**} {
-      allow read, write: if request.auth != null;
+    // ==================== HELPER FUNCTIONS ====================
+
+    /**
+     * Check if user is authenticated
+     */
+    function isAuthenticated() {
+      return request.auth != null;
     }
-    
+
+    /**
+     * Get user's tenant ID from custom claims
+     */
+    function getUserTenantId() {
+      return request.auth.token.tenantId;
+    }
+
+    /**
+     * Check if user belongs to the tenant
+     */
+    function belongsToTenant(tenantId) {
+      return isAuthenticated() && getUserTenantId() == tenantId;
+    }
+
+    /**
+     * Check if user can edit (has canEdit permission)
+     */
+    function canEdit() {
+      return isAuthenticated() && request.auth.token.canEdit == true;
+    }
+
+    /**
+     * Check if user can read (belongs to tenant)
+     */
+    function canRead(tenantId) {
+      return belongsToTenant(tenantId);
+    }
+
+    /**
+     * Check if user can write (belongs to tenant AND has canEdit permission)
+     */
+    function canWrite(tenantId) {
+      return belongsToTenant(tenantId) && canEdit();
+    }
+
+    // ==================== TENANT RULES ====================
+
+    /**
+     * Tenants collection
+     * Users can only read their own tenant
+     * Creating/updating tenants should be done via Admin SDK
+     */
+    match /tenants/{tenantId} {
+      allow read: if belongsToTenant(tenantId);
+      allow write: if false; // Only via Admin SDK
+
+      // ==================== EMPLOYEES SUBCOLLECTION ====================
+
+      match /employees/{employeeId} {
+        allow read: if canRead(tenantId);
+        allow create: if canWrite(tenantId);
+        allow update: if canWrite(tenantId);
+        allow delete: if canWrite(tenantId);
+      }
+
+      // ==================== TEAMS SUBCOLLECTION ====================
+
+      match /teams/{teamId} {
+        allow read: if canRead(tenantId);
+        allow create: if canWrite(tenantId);
+        allow update: if canWrite(tenantId);
+        allow delete: if canWrite(tenantId);
+      }
+
+      // ==================== RECORDS SUBCOLLECTION ====================
+
+      match /records/{recordId} {
+        allow read: if canRead(tenantId);
+        allow create: if canWrite(tenantId);
+        allow update: if canWrite(tenantId)
+                      && request.resource.data.employeeId == resource.data.employeeId; // No cambiar employeeId
+        allow delete: if canWrite(tenantId);
+      }
+
+      // ==================== VIEWS SUBCOLLECTION ====================
+
+      match /views/{viewId} {
+        // Users can read their own views or views shared with them
+        allow read: if canRead(tenantId)
+                    && (resource.data.ownerId == request.auth.uid
+                        || request.auth.uid in resource.data.sharedWith);
+
+        // Users can create views
+        allow create: if canRead(tenantId)
+                      && request.resource.data.ownerId == request.auth.uid;
+
+        // Users can update their own views
+        allow update: if canRead(tenantId)
+                      && resource.data.ownerId == request.auth.uid
+                      && request.resource.data.ownerId == request.auth.uid; // No cambiar owner
+
+        // Users can delete their own views
+        allow delete: if canRead(tenantId)
+                      && resource.data.ownerId == request.auth.uid;
+      }
+    }
   }
 }

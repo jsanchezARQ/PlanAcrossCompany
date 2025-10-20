@@ -28,3 +28,7 @@ firebase
 .env
 .env.local
 .env.*.local
+
+# Firebase Admin SDK credentials
+scripts/service-account-key.json
+**/service-account-key.json

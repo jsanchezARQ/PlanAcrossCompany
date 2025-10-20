@@ -7,6 +7,7 @@ import { ProtectedRoute } from './components/Auth/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { DashboardPage } from './pages/DashboardPage'
+import FirebaseTestPage from './pages/FirebaseTestPage'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -23,6 +24,14 @@ createRoot(document.getElementById('root')!).render(
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/test"
+            element={
+              <ProtectedRoute>
+                <FirebaseTestPage />
               </ProtectedRoute>
             }
           />

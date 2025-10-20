@@ -62,16 +62,18 @@
 - [x] Logout functionality
 
 ### 3. Modelo de datos Firestore
-- [ ] Implementar estructura anidada por tenant
-- [ ] Crear tipos TypeScript para todas las entidades (Tenant, Employee, Team, Record, View)
-- [ ] Funciones helper para queries
-- [ ] Setup de �ndices compuestos en Firestore
+- [x] Implementar estructura anidada por tenant
+- [x] Crear tipos TypeScript para todas las entidades (Tenant, Employee, Team, Record, View)
+- [x] Funciones helper para queries (src/services/firestore.ts)
+- [x] Setup de índices compuestos en Firestore (firestore.indexes.json + doc/firestore-indexes.md)
 
-### 4. Modelo de datos Firestore
-- [ ] Testear conexión con firebase
-- [ ] Testear Auth
-- [ ] Testear acceso a los datos
-- [ ] Testear edición de los datos
+### 4. Testear Firestore
+- [x] Página de tests creada (src/pages/FirebaseTestPage.tsx)
+- [x] Testear conexión con firebase
+- [x] Testear Auth
+- [x] Testear acceso a los datos (CRUD completo)
+- [x] Testear edición de los datos
+- [x] Ejecutar tests manualmente y verificar funcionamiento (requiere configurar custom claims)
 
 ---
 

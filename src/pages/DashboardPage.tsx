@@ -2,6 +2,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { mockTenant, mockTeams, mockEmployees } from '@/data/mockData'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * Dashboard Page - Protected route
@@ -9,6 +10,7 @@ import { mockTenant, mockTeams, mockEmployees } from '@/data/mockData'
  */
 export function DashboardPage() {
   const { currentUser, logout } = useAuth()
+  const navigate = useNavigate()
 
   const handleLogout = async () => {
     try {
@@ -32,6 +34,9 @@ export function DashboardPage() {
               <p className="text-sm font-medium">{currentUser?.displayName}</p>
               <p className="text-xs text-muted-foreground">{currentUser?.email}</p>
             </div>
+            <Button variant="outline" onClick={() => navigate('/test')}>
+              Firebase Tests
+            </Button>
             <Button variant="outline" onClick={handleLogout}>
               Logout
             </Button>

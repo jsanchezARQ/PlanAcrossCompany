@@ -19,6 +19,8 @@ interface AuthContextType {
   register: (email: string, password: string, displayName: string) => Promise<UserCredential>
   logout: () => Promise<void>
   clearError: () => void
+  waitForCustomClaims: (maxWaitMs?: number) => Promise<boolean>
+  refreshUserClaims: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -117,6 +119,42 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null)
   }
 
+  // Helper: Wait for custom claims to be set
+  // Useful after registration when custom claims are set by Cloud Function
+  const waitForCustomClaims = async (maxWaitMs: number = 5000): Promise<boolean> => {
+    const user = auth.currentUser
+    if (!user) return false
+
+    const startTime = Date.now()
+
+    while (Date.now() - startTime < maxWaitMs) {
+      await user.getIdToken(true) // Force token refresh
+      const tokenResult = await user.getIdTokenResult()
+
+      if (tokenResult.claims.tenantId) {
+        // Custom claims are available, update currentUser
+        const userWithTenant = await parseUserWithClaims(user)
+        setCurrentUser(userWithTenant)
+        return true
+      }
+
+      // Wait 500ms before retrying
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
+
+    return false // Timeout
+  }
+
+  // Force refresh of current user's token and custom claims
+  const refreshUserClaims = async (): Promise<void> => {
+    const user = auth.currentUser
+    if (!user) return
+
+    await user.getIdToken(true) // Force token refresh
+    const userWithTenant = await parseUserWithClaims(user)
+    setCurrentUser(userWithTenant)
+  }
+
   // Subscribe to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -140,6 +178,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     register,
     logout,
     clearError,
+    waitForCustomClaims,
+    refreshUserClaims,
   }
 
   return (
