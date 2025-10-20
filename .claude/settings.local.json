@@ -9,7 +9,8 @@
       "Bash(npm install @tanstack/react-virtual zustand lucide-react date-fns)",
       "Bash(npm install -D @tailwindcss/postcss)",
       "Bash(npm install)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(firebase projects:list)"
     ],
     "deny": [],
     "ask": []

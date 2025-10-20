@@ -50,7 +50,7 @@
 - [x] Crear proyecto en Firebase Console
 - [x] Configurar Authentication (email/password)
 - [x] Configurar Firestore con estructura de subcollections por tenant
-- [ ] Configurar Security Rules b�sicas
+- [x] Configurar Security Rules b�sicas
 - [ ] Setup Firebase Hosting
 
 ### 2. Sistema de autenticaci�n
