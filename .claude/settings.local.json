@@ -11,7 +11,11 @@
       "Bash(npm install)",
       "Bash(npm run build)",
       "Bash(firebase projects:list)",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(npm install react-router-dom)",
+      "Bash(npm install @radix-ui/react-label)",
+      "Bash(rm -rf node_modules package-lock.json)",
+      "Bash(npm cache clean --force)"
     ],
     "deny": [],
     "ask": []

@@ -7,6 +7,15 @@ export interface AuthUser {
   employeeId?: string
 }
 
+// Alias for AuthUser - used in AuthContext
+export type UserWithTenant = {
+  uid: string
+  email: string
+  displayName: string
+  tenantId: string | null
+  canEdit: boolean
+}
+
 export interface AuthContextType {
   user: AuthUser | null
   loading: boolean

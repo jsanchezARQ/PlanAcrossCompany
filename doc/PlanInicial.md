@@ -54,12 +54,12 @@
 - [x] Setup Firebase Hosting
 
 ### 2. Sistema de autenticaci�n
-- [ ] Crear contexto de Auth con Firebase
-- [ ] Pantalla de Login
-- [ ] Pantalla de Registro
-- [ ] Custom claims para tenantId
-- [ ] Protecci�n de rutas
-- [ ] Logout functionality
+- [x] Crear contexto de Auth con Firebase
+- [x] Pantalla de Login
+- [x] Pantalla de Registro
+- [x] Custom claims para tenantId (documentación creada)
+- [x] Protecci�n de rutas
+- [x] Logout functionality
 
 ### 3. Modelo de datos Firestore
 - [ ] Implementar estructura anidada por tenant
