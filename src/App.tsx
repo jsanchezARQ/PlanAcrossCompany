@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table'
 import { mockTenant, mockTeams, mockEmployees, mockRecords, getEmployeesByTeam, getTeamById } from '@/data/mockData'
 import type { Team, Employee } from '@/types'
+import { app, auth, db } from '@/lib/firebase'
 
 /**
  * NOTA: Este es un componente TEMPORAL de testing para Fase 1
@@ -12,6 +13,28 @@ import type { Team, Employee } from '@/types'
  */
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [firebaseStatus, setFirebaseStatus] = useState<'loading' | 'success' | 'error'>('loading')
+
+  // Test Firebase connection on mount
+  useEffect(() => {
+    try {
+      // Verify Firebase is initialized
+      const projectId = app.options.projectId
+      const authInitialized = !!auth
+      const dbInitialized = !!db
+
+      if (projectId && authInitialized && dbInitialized) {
+        setFirebaseStatus('success')
+        console.log('✅ Firebase initialized successfully:', { projectId })
+      } else {
+        setFirebaseStatus('error')
+        console.error('❌ Firebase initialization incomplete')
+      }
+    } catch (error) {
+      setFirebaseStatus('error')
+      console.error('❌ Firebase initialization error:', error)
+    }
+  }, [])
 
   // Filter employees by search term
   const filteredEmployees = mockEmployees.filter(emp =>
@@ -29,6 +52,43 @@ function App() {
             Testing types, components, and mock data - Tenant: {mockTenant.name}
           </p>
         </div>
+
+        {/* Firebase Connection Status */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Firebase Connection</CardTitle>
+            <CardDescription>Testing Firebase initialization and environment variables</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-3">
+              {firebaseStatus === 'loading' && (
+                <>
+                  <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+                  <span className="text-sm text-muted-foreground">Connecting to Firebase...</span>
+                </>
+              )}
+              {firebaseStatus === 'success' && (
+                <>
+                  <div className="w-4 h-4 rounded-full bg-green-500" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                    ✓ Firebase connected successfully
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-2">
+                    Project: {app.options.projectId}
+                  </span>
+                </>
+              )}
+              {firebaseStatus === 'error' && (
+                <>
+                  <div className="w-4 h-4 rounded-full bg-red-500" />
+                  <span className="text-sm font-medium text-red-700 dark:text-red-400">
+                    ✗ Firebase connection failed - Check console for details
+                  </span>
+                </>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Test Buttons and Input */}
         <Card>

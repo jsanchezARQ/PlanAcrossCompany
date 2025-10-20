@@ -51,7 +51,7 @@
 - [x] Configurar Authentication (email/password)
 - [x] Configurar Firestore con estructura de subcollections por tenant
 - [x] Configurar Security Rules b�sicas
-- [ ] Setup Firebase Hosting
+- [x] Setup Firebase Hosting
 
 ### 2. Sistema de autenticaci�n
 - [ ] Crear contexto de Auth con Firebase

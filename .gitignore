@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 firebase
 .firebase/
+# Conf .env
+.env
+.env.local
+.env.*.local
