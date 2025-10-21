@@ -103,6 +103,7 @@ export async function tenantExists(tenantId: string): Promise<boolean> {
  * Get employees collection reference for a tenant
  */
 export function getEmployeesCollection(tenantId: string): CollectionReference {
+  console.log('Getting employees collection for tenant:', tenantId)
   return collection(db, 'tenants', tenantId, 'employees')
 }
 
@@ -165,7 +166,11 @@ export async function createEmployee(
   data: CreateEmployeeInput
 ): Promise<string> {
   const employeesCol = getEmployeesCollection(tenantId)
-  const docRef = await addDoc(employeesCol, data)
+  const docRef = await addDoc(employeesCol, {
+    ...data,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  })
   return docRef.id
 }
 
@@ -178,7 +183,10 @@ export async function updateEmployee(
   data: UpdateEmployeeInput
 ): Promise<void> {
   const employeeRef = getEmployeeRef(tenantId, employeeId)
-  await updateDoc(employeeRef, data as any)
+  await updateDoc(employeeRef, {
+    ...data,
+    updatedAt: Timestamp.now(),
+  } as any)
 }
 
 /**
@@ -240,7 +248,11 @@ export async function getTeam(tenantId: string, teamId: string): Promise<Team | 
  */
 export async function createTeam(tenantId: string, data: CreateTeamInput): Promise<string> {
   const teamsCol = getTeamsCollection(tenantId)
-  const docRef = await addDoc(teamsCol, data)
+  const docRef = await addDoc(teamsCol, {
+    ...data,
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
+  })
   return docRef.id
 }
 
@@ -253,7 +265,10 @@ export async function updateTeam(
   data: UpdateTeamInput
 ): Promise<void> {
   const teamRef = getTeamRef(tenantId, teamId)
-  await updateDoc(teamRef, data as any)
+  await updateDoc(teamRef, {
+    ...data,
+    updatedAt: Timestamp.now(),
+  } as any)
 }
 
 /**

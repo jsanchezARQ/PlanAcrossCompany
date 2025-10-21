@@ -6,12 +6,17 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@
 import { mockTenant, mockTeams, mockEmployees, mockRecords, getEmployeesByTeam, getTeamById } from '@/data/mockData'
 import type { Team, Employee } from '@/types'
 import { app, auth, db } from '@/lib/firebase'
+import { AdminPanel } from '@/components/Admin'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { loadTestData } from '@/scripts/loadTestData'
+import { useAuth } from '@/contexts/AuthContext'
 
 /**
  * NOTA: Este es un componente TEMPORAL de testing para Fase 1
  * Será REEMPLAZADO en Fase 2 con el Grid real y sistema de autenticación
  */
 function App() {
+  const { currentUser } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [firebaseStatus, setFirebaseStatus] = useState<'loading' | 'success' | 'error'>('loading')
 
@@ -26,6 +31,11 @@ function App() {
       if (projectId && authInitialized && dbInitialized) {
         setFirebaseStatus('success')
         console.log('✅ Firebase initialized successfully:', { projectId })
+
+        // Make loadTestData available globally for console usage
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(window as any).loadTestData = loadTestData
+        console.log('💡 Run loadTestData() in console to populate Firestore with test data')
       } else {
         setFirebaseStatus('error')
         console.error('❌ Firebase initialization incomplete')
@@ -52,6 +62,30 @@ function App() {
             Testing types, components, and mock data - Tenant: {mockTenant.name}
           </p>
         </div>
+
+        {/* Main Tabs */}
+        <Tabs defaultValue="admin" className="w-full">
+          <TabsList className="grid w-full max-w-md grid-cols-2">
+            <TabsTrigger value="admin">Admin Panel</TabsTrigger>
+            <TabsTrigger value="tests">Component Tests</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="admin" className="mt-6">
+            {currentUser?.tenantId ? (
+              <AdminPanel tenantId={currentUser.tenantId} />
+            ) : (
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="text-center text-muted-foreground">
+                    You must be assigned to a tenant to access the admin panel.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="tests" className="mt-6 space-y-8">
+            {/* All existing test cards go here */}
 
         {/* Firebase Connection Status */}
         <Card>
@@ -275,6 +309,8 @@ function App() {
             Next: Firebase setup, TanStack Virtual, Zustand, and date-fns testing
           </p>
         </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   )

@@ -67,6 +67,21 @@
 - [x] Funciones helper para queries (src/services/firestore.ts)
 - [x] Setup de índices compuestos en Firestore (firestore.indexes.json + doc/firestore-indexes.md)
 
+### 4. Panel admin usuarios y grupos
+- [x] Página AdminPage creada (src/pages/AdminPage.tsx)
+- [x] Routing configurado en /admin (src/main.tsx)
+- [x] Panel Admin CRUD completo con componentes:
+  - [x] AdminPanel con tabs (Employees y Teams)
+  - [x] EmployeesTab con tabla y CRUD
+  - [x] TeamsTab con tabla y CRUD
+  - [x] EmployeeDialog con formulario y validaciones
+  - [x] TeamDialog con formulario, paleta de colores y validaciones
+- [x] Crear tipos TypeScript para todas las entidades (Employee, Team)
+- [x] Build sin errores TypeScript
+- [x] Documentación completa (README.md y admin-panel-implementation.md)
+- [x] Testear manualmente
+
+
 ### 4. Testear Firestore
 - [x] Página de tests creada (src/pages/FirebaseTestPage.tsx)
 - [x] Testear conexión con firebase
@@ -82,24 +97,25 @@
 ### 6. Componente Grid virtualizado
 - [ ] Header con empleados agrupados por equipos (con colores)
 - [ ] Columna de fechas a la izquierda
-- [ ] Implementar virtualizaci�n con TanStack Virtual
-- [ ] Grid responsive b�sico
+- [ ] Implementar virtualizaci\u00f3n con TanStack Virtual
+- [ ] Grid responsive b\u00e1sico
 - [ ] Estilos base del grid
 
 ### 7. Sistema de carga de datos
 - [ ] Query inicial de 1-3 meses de datos
-- [ ] Paginaci�n por scroll (infinite scroll)
-- [ ] Cache local con Firestore offline persistence
+- [ ] Hook personalizado useGridData
+- [ ] Cache local con Firestore offline persistence (configurado en firebase.ts)
 - [ ] Loading states y skeletons
 - [ ] Error handling
+- [ ] Paginaci\u00f3n por scroll (infinite scroll) - diferido a Fase 4
 
-### 8. Edici�n de celdas
+### 8. Edici\u00f3n de celdas
 - [ ] Click para editar celda individual
 - [ ] Input inline con auto-save
-- [ ] Realtime updates (ver cambios de otros usuarios)
 - [ ] Indicador visual de "guardando"
 - [ ] Manejo de errores en guardado
-- [ ] ESC para cancelar edici�n
+- [ ] ESC para cancelar edici\u00f3n
+- [ ] Realtime updates (ver cambios de otros usuarios) - pr\u00f3ximo paso
 
 ---
 
