@@ -1,6 +1,6 @@
 export { AdminPanel } from './AdminPanel'
 export { EmployeesTab } from './EmployeesTab'
 export { TeamsTab } from './TeamsTab'
+export { DataManagementTab } from './DataManagementTab'
 export { EmployeeDialog } from './EmployeeDialog'
 export { TeamDialog } from './TeamDialog'
-export { DebugPanel } from './DebugPanel'

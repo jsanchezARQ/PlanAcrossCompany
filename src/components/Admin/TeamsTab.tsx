@@ -15,15 +15,14 @@ import type { Team } from '@/types'
 import { TeamDialog } from './TeamDialog'
 import { useTeams } from '@/hooks/useTeams'
 import { useEmployees } from '@/hooks/useEmployees'
+import { useAuth } from '@/contexts/AuthContext'
 
 type SortField = 'displayName' | 'fullName' | 'manager' | 'members'
 type SortDirection = 'asc' | 'desc' | null
 
-interface TeamsTabProps {
-  tenantId: string
-}
-
-export function TeamsTab({ tenantId }: TeamsTabProps) {
+export function TeamsTab() {
+  const { currentUser } = useAuth()
+  const tenantId = currentUser?.tenantId || ''
   const { teams, loading: teamsLoading, createTeam, updateTeam, deleteTeam: deleteTeamService } = useTeams(tenantId)
   const { employees, loading: employeesLoading } = useEmployees(tenantId)
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null)

@@ -14,7 +14,7 @@ import { doc, setDoc, collection, addDoc, Timestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import type { CreateTeamInput, CreateEmployeeInput } from '@/types'
 
-const TENANT_ID = 'demo-company'
+const TENANT_ID = 'tenant-001'
 
 /**
  * Crea el tenant de demo
@@ -41,42 +41,48 @@ async function createTeams() {
       fullName: 'Technical Team Barcelona',
       displayName: 'TEC-BCN',
       color: '#FF5733',
-      managerId: undefined, // Se asignará después de crear employees
+      // managerId will be omitted (undefined fields are not allowed in Firestore)
     },
     {
       fullName: 'Administration Team',
       displayName: 'ADM',
       color: '#33C4FF',
-      managerId: undefined,
     },
     {
       fullName: 'Sales Team Madrid',
       displayName: 'SALES-MAD',
       color: '#28A745',
-      managerId: undefined,
     },
     {
       fullName: 'Marketing Team',
       displayName: 'MKT',
       color: '#FFC107',
-      managerId: undefined,
     },
     {
       fullName: 'Operations Team',
       displayName: 'OPS',
       color: '#6F42C1',
-      managerId: undefined,
     },
   ]
 
   const createdTeams: { id: string; data: CreateTeamInput }[] = []
 
   for (const team of teams) {
-    const docRef = await addDoc(teamsCol, {
-      ...team,
+    // Remove undefined fields before sending to Firestore
+    const teamData: any = {
+      fullName: team.fullName,
+      displayName: team.displayName,
+      color: team.color,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
-    })
+    }
+
+    // Only add managerId if it's defined
+    if (team.managerId !== undefined) {
+      teamData.managerId = team.managerId
+    }
+
+    const docRef = await addDoc(teamsCol, teamData)
 
     createdTeams.push({
       id: docRef.id,
@@ -252,9 +258,9 @@ export async function loadTestData() {
     console.log('✅ Test data loaded successfully!')
     console.log(
       `\n📊 Summary:\n` +
-        `- Tenant: ${TENANT_ID}\n` +
-        `- Teams: ${teams.length}\n` +
-        `- Employees: 15\n`
+      `- Tenant: ${TENANT_ID}\n` +
+      `- Teams: ${teams.length}\n` +
+      `- Employees: 15\n`
     )
 
     return {
@@ -270,5 +276,5 @@ export async function loadTestData() {
 
 // Exportar para uso en la consola del navegador
 if (typeof window !== 'undefined') {
-  ;(window as any).loadTestData = loadTestData
+  ; (window as any).loadTestData = loadTestData
 }

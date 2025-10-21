@@ -72,7 +72,7 @@ function App() {
 
           <TabsContent value="admin" className="mt-6">
             {currentUser?.tenantId ? (
-              <AdminPanel tenantId={currentUser.tenantId} />
+              <AdminPanel />
             ) : (
               <Card>
                 <CardContent className="pt-6">

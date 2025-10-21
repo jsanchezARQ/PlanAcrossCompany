@@ -15,15 +15,14 @@ import type { Employee } from '@/types'
 import { EmployeeDialog } from './EmployeeDialog'
 import { useEmployees } from '@/hooks/useEmployees'
 import { useTeams } from '@/hooks/useTeams'
+import { useAuth } from '@/contexts/AuthContext'
 
 type SortField = 'fullName' | 'team' | 'email' | 'canEdit'
 type SortDirection = 'asc' | 'desc' | null
 
-interface EmployeesTabProps {
-  tenantId: string
-}
-
-export function EmployeesTab({ tenantId }: EmployeesTabProps) {
+export function EmployeesTab() {
+  const { currentUser } = useAuth()
+  const tenantId = currentUser?.tenantId || ''
   const { employees, loading: employeesLoading, createEmployee, updateEmployee, deleteEmployee: deleteEmployeeService } = useEmployees(tenantId)
   const { teams, loading: teamsLoading } = useTeams(tenantId)
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
